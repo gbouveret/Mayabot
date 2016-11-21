@@ -27,7 +27,12 @@ bot.dialog('/', [
         builder.Prompts.number(session, results.response + ", quel joli prénom ! Combien êtes-vous à m'aider ?"); 
     },
     function (session, results) {
-        session.userData.coding = results.response;
+        session.userData.nbPeople = results.response;
+		session.send("Super, c'est une bien belle équipe ! Bien, pour commencer, vous allez devoir trouver les 3 numéros permettant de déchiffrer l'emplacement des villes.");
+        builder.Prompts.number(session, "Quel est ce code ?");
+    },
+    function (session, results) {
+        session.userData.code = results.response;
         builder.Prompts.choice(session, "What language do you code Node using?", ["JavaScript", "CoffeeScript", "TypeScript"]);
     },
     function (session, results) {

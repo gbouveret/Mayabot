@@ -80,13 +80,10 @@ bot.dialog('/name', [
                 contentUrl: "https://manonmaya.azurewebsites.net/eduardo.jpg"
             }]);
 		session.send(msg);
-		var count = 0;
-		do{
-			session.sendTyping();
-			sleep.sleep(1);
-			count++;
-		}while(count < 3);
-		builder.Prompts.text(session, "Bonjour, je suis Eduardo, content de savoir que vous acceptez de m'aider à retrouver le trésor. Quel est ton prénom ?");
+		session.sendTyping();
+		setTimeout(function() {
+			builder.Prompts.text(session, "Bonjour, je suis Eduardo, content de savoir que vous acceptez de m'aider à retrouver le trésor. Quel est ton prénom ?");
+		}, 1000);
 	},
     function (session, results) {
         var curName = results.response;

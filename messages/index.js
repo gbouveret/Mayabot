@@ -76,7 +76,7 @@ bot.dialog('/nbPeople', [
 	},
     function (session, results) {
         session.userData.nbPeople = results.response;
-		session.send(session.userData.nbPeople " ! Ca fait une bien belle équipe dis-moi !");
+		session.send(session.userData.nbPeople + " ! Ca fait une bien belle équipe dis-moi !");
         session.endDialog();
     }
 ]);

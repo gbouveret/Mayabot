@@ -72,7 +72,7 @@ bot.dialog('/name', [
 
 bot.dialog('/nbPeople', [
 	function (session) {
-       builder.Prompts.number(session, results.response + ", quel joli prénom ! Combien êtes-vous à m'aider ?"); 
+       builder.Prompts.number(session, session.userData.name + ", quel joli prénom ! Combien êtes-vous à m'aider ?"); 
 	},
     function (session, results) {
         session.userData.nbPeople = results.response;

@@ -42,7 +42,7 @@ bot.dialog('/', [
 		}
     },
     function (session, results) {
-		if (!session.userData.code){
+		if (!session.userData.code1){
 			session.beginDialog('/code');
 		} else {
 			next();
@@ -55,7 +55,6 @@ bot.dialog('/', [
 		else{
 			session.send("C'était une bien belle aventure hein ! :)")
 		}
-        builder.Prompts.choice(session, "What language do you code Node using?", ["JavaScript", "CoffeeScript", "TypeScript"]);
     }
 ]);
 
@@ -83,14 +82,14 @@ bot.dialog('/nbPeople', [
 
 bot.dialog('/code', [
 	function (session) {
-		session.send("Bien, pour commencer, vous allez devoir trouver les 3 numéros permettant de déchiffrer l'emplacement des villes.");
-		session.send("Pour cela, je vous ai fait parvenir une lettre contenant une énigme Maya qui devrait vous permettre de trouver un code à 3 chiffres.");
+		//session.send("Bien, pour commencer, vous allez devoir trouver les 3 numéros permettant de déchiffrer l'emplacement des villes.");
+		//session.send("Pour cela, je vous ai fait parvenir une lettre contenant une énigme Maya qui devrait vous permettre de trouver un code à 3 chiffres.");
         builder.Prompts.text(session, "Je vous laisse chercher et vous me direz le code quand vous l'aurez trouvé. A tout à l'heure");
 	},
     function (session, results) {
 		var curCode = results.response;
 		if (curCode == "059"){
-			session.userData.code = curCode;
+			session.userData.code1 = curCode;
 		}		
         session.endDialog();        
     }

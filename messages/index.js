@@ -53,7 +53,7 @@ bot.dialog('/', [
 			session.beginDialog('/final');
 		}
 		else{
-			session.send("C'était une bien belle aventure hein ! :)")
+			session.send("C'était une bien belle aventure hein ! :)");
 		}
     }
 ]);

@@ -49,14 +49,13 @@ bot.dialog('/', [
 		}
     },
     function (session, results) {
-        session.userData.code = results.response;
+		if (!session.userData.end){
+			session.beginDialog('/final');
+		}
+		else{
+			session.send("C'était une bien belle aventure hein ! :)")
+		}
         builder.Prompts.choice(session, "What language do you code Node using?", ["JavaScript", "CoffeeScript", "TypeScript"]);
-    },
-    function (session, results) {
-        session.userData.language = results.response.entity;
-        session.send("Got it... " + session.userData.name + 
-                    " you've been programming for " + session.userData.coding + 
-                    " years and use " + session.userData.language + ".");
     }
 ]);
 
@@ -66,13 +65,14 @@ bot.dialog('/name', [
 	},
     function (session, results) {
         session.userData.name = results.response;
+		session.send(session.userData.name + ", quel joli prénom !");
         session.endDialog();
     }
 ]);
 
 bot.dialog('/nbPeople', [
 	function (session) {
-       builder.Prompts.number(session, session.userData.name + ", quel joli prénom ! Combien êtes-vous à m'aider ?"); 
+       builder.Prompts.number(session, "Alors, combien êtes-vous à m'aider ?"); 
 	},
     function (session, results) {
         session.userData.nbPeople = results.response;
@@ -83,7 +83,8 @@ bot.dialog('/nbPeople', [
 
 bot.dialog('/code', [
 	function (session) {
-		session.send("Bien, pour commencer, vous allez devoir trouver les 3 numéros permettant de déchiffrer l'emplacement des villes. Pour cela, je vous ai fait parvenir une lettre contenant une énigme Maya qui devrait vous permettre de trouver un code à 3 chiffres.");
+		session.send("Bien, pour commencer, vous allez devoir trouver les 3 numéros permettant de déchiffrer l'emplacement des villes.");
+		session.send("Pour cela, je vous ai fait parvenir une lettre contenant une énigme Maya qui devrait vous permettre de trouver un code à 3 chiffres.");
         builder.Prompts.text(session, "Je vous laisse chercher et vous me direz le code quand vous l'aurez trouvé. A tout à l'heure");
 	},
     function (session, results) {
@@ -92,6 +93,18 @@ bot.dialog('/code', [
 			session.userData.code = curCode;
 		}		
         session.endDialog();        
+    }
+]);
+
+bot.dialog('/final', [
+	function (session) {
+		session.send("Oui !!! J'ai trouvé le trésor, c'est magnifique.");
+		session.send("Je ne sais pas comment vous remercier...");
+		builder.Prompts.text(session, "J'espère que cette chasse au trésor vous aura plus autant qu'à moi !"); 
+	},
+    function (session, results) {
+		session.userData.end = true;
+        session.endDialog();
     }
 ]);
 

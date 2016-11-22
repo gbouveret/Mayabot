@@ -19,17 +19,34 @@ var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure
 var bot = new builder.UniversalBot(connector);
 
 bot.dialog('/', [
-    function (session) {
-        builder.Prompts.text(session, "Bonjour, je suis Eduardo, content de savoir que vous acceptez de m'aider à retrouver le trésor. Quel est votre nom ?");
+    function (session, args, next) {
+		if (!session.userData.name) {
+			session.beginDialog('/name');
+		} else {
+			session.send("Rebonjour " + session.userData.name + ".");
+			next();
+		}
     },
     function (session, results) {
-        session.userData.name = results.response;
-        builder.Prompts.number(session, results.response + ", quel joli prénom ! Combien êtes-vous à m'aider ?"); 
+        if (!session.userData.nbPeople){
+			session.beginDialog('/nbPeople');
+		} else {
+			next();
+		}
     },
     function (session, results) {
-        session.userData.nbPeople = results.response;
-		session.send("Super, c'est une bien belle équipe ! Bien, pour commencer, vous allez devoir trouver les 3 numéros permettant de déchiffrer l'emplacement des villes.");
-        builder.Prompts.number(session, "Quel est ce code ?");
+        if (!session.userData.nbPeople){
+			session.beginDialog('/nbPeople');
+		} else {
+			next();
+		}
+    },
+    function (session, results) {
+		if (!session.userData.code){
+			session.beginDialog('/code');
+		} else {
+			next();
+		}
     },
     function (session, results) {
         session.userData.code = results.response;
@@ -40,6 +57,41 @@ bot.dialog('/', [
         session.send("Got it... " + session.userData.name + 
                     " you've been programming for " + session.userData.coding + 
                     " years and use " + session.userData.language + ".");
+    }
+]);
+
+bot.dialog('/name', [
+	function (session) {
+		builder.Prompts.text(session, "Bonjour, je suis Eduardo, content de savoir que vous acceptez de m'aider à retrouver le trésor. Quel est ton prénom ?");
+	},
+    function (session, results) {
+        session.userData.name = results.response;
+        session.endDialog();
+    }
+]);
+
+bot.dialog('/nbPeople', [
+	function (session) {
+       builder.Prompts.number(session, results.response + ", quel joli prénom ! Combien êtes-vous à m'aider ?"); 
+	},
+    function (session, results) {
+        session.userData.nbPeople = results.response;
+		session.send(session.userData.nbPeople " ! Ca fait une bien belle équipe dis-moi !");
+        session.endDialog();
+    }
+]);
+
+bot.dialog('/code', [
+	function (session) {
+		session.send("Bien, pour commencer, vous allez devoir trouver les 3 numéros permettant de déchiffrer l'emplacement des villes. Pour cela, je vous ai fait parvenir une lettre contenant une énigme Maya qui devrait vous permettre de trouver un code à 3 chiffres.");
+        builder.Prompts.text(session, "Je vous laisse chercher et vous me direz le code quand vous l'aurez trouvé. A tout à l'heure");
+	},
+    function (session, results) {
+		var curCode = results.response;
+		if (curCode == "059"){
+			session.userData.code = curCode;
+		}		
+        session.endDialog();        
     }
 ]);
 

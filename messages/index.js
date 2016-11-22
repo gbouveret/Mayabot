@@ -5,7 +5,6 @@ https://docs.botframework.com/en-us/node/builder/chat/dialogs/#waterfall
 -----------------------------------------------------------------------------*/
 "use strict";
 var builder = require("botbuilder");
-var sleep = require("sleep");
 var botbuilder_azure = require("botbuilder-azure");
 
 var useEmulator = (process.env.NODE_ENV == 'development') || !process.env.NODE_ENV;

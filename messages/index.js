@@ -7,8 +7,10 @@ https://docs.botframework.com/en-us/node/builder/chat/dialogs/#waterfall
 var builder = require("botbuilder");
 var botbuilder_azure = require("botbuilder-azure");
 
-var useEmulator = (process.env.NODE_ENV == 'development') || !process.env.NODE_ENV;
+var useEmulator = process.env['BotEnv'] != 'prod';// || !process.env.NODE_ENV;
+
 console.log(useEmulator);
+
 var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
     appId: process.env['MicrosoftAppId'],
     appPassword: process.env['MicrosoftAppPassword'],

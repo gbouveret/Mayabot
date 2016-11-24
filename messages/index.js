@@ -116,10 +116,10 @@ bot.dialog('/code', [
 	},
     function (session, results) {
 		var curCode = results.response;
-		if (curCode.indexOf("059") >= 0) {
+		if (curCode.indexOf("0") >= 0 && curCode.indexOf("5") >= 0 && curCode.indexOf("9") >= 0) {
 			session.userData.code = "059";
-			session.send("Parfait, c'est bien ce code !");
-			session.endDialog();        
+			session.send("Parfait !");
+			session.endDialog();
 		} else{
 			session.beginDialog('/code');		
 		}
@@ -128,8 +128,10 @@ bot.dialog('/code', [
 
 bot.dialog('/cities', [
 	function (session) {
-		session.send("Grâce à ce code, vous allez pouvoir m'aider à trouver le nom des quelques villes dans lesquelles nous devrions trouver le temple.");
-		builder.Prompts.text(session, "Pouvez-vous me dire le nom des villes que vous aurez trouvé ?"); 
+		session.send("Grâce à ce code, vous allez pouvoir m'aider à trouver le nom des quelques villes dans lesquelles je dois effectuer des recherche.");
+		session.send("Cela, ouvrez l'enveloppe contenant les feuilles avec le nom des villes cryptées, et coloriez les cases portant un des chiffres du code (" + session.userData.code + ").");
+		session.send("Pour vous aider, je vous ai fourni une carte.");
+		builder.Prompts.text(session, "Quand vous aurez fini, dites-moi leurs noms."); 
 	},
     function (session, results) {
         session.userData.cities = results.response;

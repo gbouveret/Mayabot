@@ -176,7 +176,7 @@ bot.dialog('/city', [
 			builder.Prompts.text(session, "Je ne crois pas que ce soit la bonne ville. Une autre idée ?");
 		} else {
 			session.send("Bien, parmi ces différents sites Mayas, il n'y en a qu'un sur lesquels nous devons nous focaliser.");
-			session.send("J'ai pu retrouver les initiales de la bonne ville dans un vieux parchemin décrivant la cérémonie funéraire : KI.");
+			session.send("J'ai pu retrouver les initiales de la bonne ville dans un vieux parchemin décrivant la cérémonie funéraire : CI.");
 			builder.Prompts.text(session, "Pouvez-vous me donner le nom complet parmi ceux que vous avez déchiffré ?");
 		} 
 	},
@@ -197,8 +197,7 @@ bot.dialog('/city', [
 
 bot.dialog('/decrypt', [
 	function (session) {
-		session.send("Nous avons pu effectuer des fouilles, et j'ai trouvé un texte nécessitant d'être traduit depuis les caractères Mayas.");		
-		session.send("Je vous envoie ça.");		
+		session.send("Nous avons pu effectuer des fouilles, et j'ai trouvé un texte nécessitant d'être traduit depuis les caractères Mayas. Je vous envoie ça.");		
 		builder.Prompts.text(session, "Faites moi signe quand vous aurez fini de le traduire."); 
 	},
     function (session, results) {
@@ -246,7 +245,7 @@ bot.dialog('/location', [
 
 bot.dialog('/final', [
 	function (session) {
-		session.send("Oui (victory) !!! J'ai trouvé le trésor, c'est magnifique. (celebrate)");
+		session.send("Oui :D  !!! J'ai trouvé le trésor, c'est magnifique !");
 		session.send("Je ne sais pas comment vous remercier...");
 		builder.Prompts.text(session, "J'espère que cette chasse au trésor vous aura plu autant qu'à moi !"); 
 	},

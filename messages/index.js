@@ -22,13 +22,6 @@ var bot = new builder.UniversalBot(connector);
 
 bot.dialog('/', [
     function (session, args, next) {
-		if (!session.userData.location) {
-			session.beginDialog('/location');
-		} else {
-			next();
-		}
-    },
-    function (session, args, next) {
 		if (!session.userData.name) {
 			session.beginDialog('/name');
 		} else {
@@ -65,40 +58,19 @@ bot.dialog('/', [
 		}
     },
     function (session, args, next) {
-		if (!session.userData.decrypt) {
-			session.beginDialog('/decrypt');
-		} else {
-			next();
-		}
-    },
-    function (session, args, next) {
-		if (!session.userData.location) {
-			session.beginDialog('/location');
-		} else {
-			next();
-		}
-    },
-    function (session, args, next) {
 		if (!session.userData.end){
 			session.beginDialog('/final');
 		}
 		else{
 			session.send("C'était une bien belle aventure hein ! :)");
 
-			session.beginDialog('/deleteprofile');
+			session.userData.name = null;
+			session.userData.nbPeople = null;
+			session.userData.code = null;
+			session.userData.cities = null;
+			session.userData.end = null;
 		}
     }
-]);
-
-bot.dialog('/deleteprofile', [
-	function(session){
-		session.userData.name = null;
-		session.userData.nbPeople = null;
-		session.userData.code = null;
-		session.userData.cities = null;
-		session.userData.decrypt = null;
-		session.userData.end = null;
-	}
 ]);
 
 bot.dialog('/name', [
@@ -166,49 +138,11 @@ bot.dialog('/cities', [
     }
 ]);
 
-bot.dialog('/decrypt', [
-	function (session) {
-		session.send("Nous avons pu effectuer des fouilles, et j'ai trouvé un texte nécessitant d'être traduit depuis les caractères Mayas.");		
-		session.send("Je vous envoie ça.");		
-		builder.Prompts.text(session, "Faites moi signe quand vous aurez fini de le traduire."); 
-	},
-    function (session, results) {
-        session.userData.decrypt = results.response;
-		//session.send(session.userData.nbPeople + " ! Ca fait une bien belle équipe dis-moi !");
-        session.endDialog();
-    }
-]);
-
-bot.dialog('/location', [
-	function (session) {
-		session.send("Bon, avec les informations sur la Pyramide de Kukulcán trouvées sur Wikipedia, vous devriez pouvoir devenir l'emplacement exact de la cachette de la sépulture.");		
-        var msg = new builder.Message(session)
-            .textFormat(builder.TextFormat.xml)
-            .attachments([
-                new builder.HeroCard(session)
-                    .title("Pyramide de Kukulcán")
-                    .subtitle("WikiPedia")
-                    .text("La pyramide de <b>Kukulcán</b>, également appelée El Castillo, est un monument précolombien, vieux de plus de mille ans [...]")
-                    .images([
-                        builder.CardImage.create(session, "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/El_Castillo_Stitch_2008_Edit_1.jpg/390px-El_Castillo_Stitch_2008_Edit_1.jpg")
-                    ])
-                    .tap(builder.CardAction.openUrl(session, "https://fr.wikipedia.org/wiki/Pyramide_de_Kukulc%C3%A1n"))
-            ]);
-        session.endDialog(msg);
-		builder.Prompts.text(session, "Du coup, à votre avis quel est l'escalier et le numéro de la marche sur lesquels je dois me focaliser ?"); 
-	},
-    function (session, results) {
-        session.userData.location = results.response;
-		//session.send(session.userData.nbPeople + " ! Ca fait une bien belle équipe dis-moi !");
-        session.endDialog();
-    }
-]);
-
 bot.dialog('/final', [
 	function (session) {
 		session.send("Oui !!! J'ai trouvé le trésor, c'est magnifique.");
 		session.send("Je ne sais pas comment vous remercier...");
-		builder.Prompts.text(session, "J'espère que cette chasse au trésor vous aura plu autant qu'à moi !"); 
+		builder.Prompts.text(session, "J'espère que cette chasse au trésor vous aura plus autant qu'à moi !"); 
 	},
     function (session, results) {
 		session.userData.end = true;

@@ -27,6 +27,7 @@ bot.dialog('/', [
 		if (!session.userData.name) {
 			session.beginDialog('/name');
 		} else {
+			//session.beginDialog('/end');
 			session.send("Rebonjour " + session.userData.name + ".");
 			next();
 		}
@@ -77,15 +78,23 @@ bot.dialog('/', [
 		if (!session.userData.final){
 			session.beginDialog('/final');
 		}
-		else{
-			session.send("C'était une bien belle aventure hein ! :)");
-
-			session.beginDialog('/deleteprofile');
-		}
-    }
+    },
+	function (session, args, next) {
+		session.sendTyping();
+		setTimeout(function(){
+			session.send("C'était une bien belle aventure ! Partagez bien le chocolat en " + session.userData.nbPeople  + " parts équitables, hein !")
+			session.sendTyping();
+		}, 2000);
+		setTimeout(function(){
+			session.send("Allez, à une prochaine fois, et profitez-bien du trésor ;)");
+		}, 4000);
+		setTimeout(function(){
+			session.beginDialog('/end');
+		}, 5000);
+	}
 ]);
 
-bot.dialog('/deleteprofile', [
+bot.dialog('/end', [
 	function(session){
 		session.userData.name = null;
 		session.userData.nbPeople = null;
@@ -98,6 +107,7 @@ bot.dialog('/deleteprofile', [
 		session.userData.location = null;
 		session.userData.retryLocation = null;
 		session.userData.final = null;
+        session.endDialog();
 	}
 ]);
 
@@ -110,29 +120,49 @@ bot.dialog('/name', [
             }]);
 		session.send(msg);
 		session.sendTyping();*/
-		setTimeout(function() {
-			builder.Prompts.text(session, "Bonjour, je suis Eduardo, content de savoir que vous acceptez de m'aider à retrouver le trésor. Quel est ton prénom ?");
-		}, 1000);
+		session.sendTyping();
+		setTimeout(function(){
+			session.send("Bonjour, je suis Eduardo Rodriguez. Je suis  heureux de savoir que vous acceptez de m'aider à retrouver le trésor sacré des Mayas.");
+			session.sendTyping();
+		}, 1500);
+		setTimeout(function(){
+			builder.Prompts.text(session, "Mais avant de commencer, faisons d'abord connaissance. Quel est ton prénom ?");
+		}, 4000);
 	},
     function (session, results) {
         var curName = results.response;
-		curName = curName.replace(".", "").replace("!", "");
+		curName = curName.replace(".", "").replace("!", "").trim();
 		var tName = curName.split(' ');
 		curName = tName[tName.length - 1];
 		session.userData.name = curName;
-		session.send(session.userData.name + ", quel joli prénom !");
-        session.endDialog();
+		session.sendTyping();
+		setTimeout(function(){		
+			session.send(session.userData.name + ", c'est un  joli prénom !");
+    	    session.endDialog();
+		}, 2000);
     }
 ]);
 
 bot.dialog('/nbPeople', [
 	function (session) {
-       builder.Prompts.number(session, "Alors, combien êtes-vous à m'aider ?"); 
+		session.sendTyping();
+		setTimeout(function() {
+	       builder.Prompts.number(session, "Alors, dis-moi, combien êtes-vous à vouloir m'aider ?"); 
+		}, 1500);
 	},
     function (session, results) {
         session.userData.nbPeople = results.response;
-		session.send(session.userData.nbPeople + " ! Ca fait une bien belle équipe dis-moi !");
-        session.endDialog();
+
+		session.sendTyping();
+		setTimeout(function() {		
+			if (session.userData.nbPeople >= 5){
+				session.send("Ca fait une bien belle équipe dis-moi !");
+			}
+			else{
+				session.send("C'est déjà bien, ce qui compte c'est votre motivation !");
+			}
+        	session.endDialog();
+		}, 1500);
     }
 ]);
 
@@ -141,16 +171,24 @@ bot.dialog('/code', [
 		if (session.userData.retryCode){
 			builder.Prompts.text(session, "Ce n'est pas le bon code, réfléchissez encore un peu et faites moi une autre proposition.");
 		} else {
-			session.send("Bien, pour commencer, vous allez devoir trouver les 3 numéros permettant de déchiffrer l'emplacement des villes.");
-			session.send("Pour cela, je vous ai fait parvenir une lettre contenant une énigme Maya qui devrait vous permettre de trouver un code à 3 chiffres.");
-			builder.Prompts.text(session, "Je vous laisse chercher et vous me direz le code quand vous l'aurez trouvé. A tout à l'heure");
+			session.sendTyping();
+			setTimeout(function() {
+				session.send("Bien, pour commencer, vous allez devoir trouver les 3 chiffres permettant de décrypter le nom des villes Mayas qui nous intéressent.");
+				session.sendTyping();
+			}, 1500);
+			setTimeout(function() {
+				session.send("Pour cela, je vous ai fait parvenir une lettre contenant des indices.");
+				session.sendTyping();
+			}, 3000);
+			setTimeout(function() {
+				builder.Prompts.text(session, "Je vous laisse chercher et vous me donnerez ces 3 chiffres quand vous les aurez trouvé. A tout à l'heure");
+			}, 4500);			
 		}
 	},
     function (session, results) {
 		var curCode = results.response;
 		if (curCode.indexOf("0") >= 0 && curCode.indexOf("5") >= 0 && curCode.indexOf("9") >= 0) {
 			session.userData.code = "059";
-			session.send("Parfait, c'est bien ce code ! (y)");
 			session.endDialog();        
 		} else{
 			session.userData.retryCode = true;
@@ -161,8 +199,18 @@ bot.dialog('/code', [
 
 bot.dialog('/cities', [
 	function (session) {
-		session.send("Grâce à ce code, vous allez pouvoir m'aider à trouver le nom des quelques villes dans lesquelles nous devrions trouver le temple.");
-		builder.Prompts.text(session, "Prévenez-moi quand vous aurez trouvé toutes les villes."); 
+		session.sendTyping();
+		setTimeout(function() {
+			session.send("Super, avec ce code vous pouvez maintenant ouvrir l'enveloppe des sites Mayas. Coloriez les cases comportant un des chiffres du code pour découvrir le nom des villes qui nous intéressent.");					
+			session.sendTyping();
+		}, 1500);
+		setTimeout(function() {
+			session.send("Je vous ai fourni aussi une carte afin que vous puissiez vérifier vos découvertes.")
+			session.sendTyping();
+		}, 6500);
+		setTimeout(function(){
+			builder.Prompts.text(session, "Prévenez-moi quand vous aurez trouvé toutes les villes.");
+		}, 9000); 
 	},
     function (session, results) {
         session.userData.cities = results.response;
@@ -175,9 +223,19 @@ bot.dialog('/city', [
 		if (session.userData.retryCity){
 			builder.Prompts.text(session, "Je ne crois pas que ce soit la bonne ville. Une autre idée ?");
 		} else {
-			session.send("Bien, parmi ces différents sites Mayas, il n'y en a qu'un sur lesquels nous devons nous focaliser.");
-			session.send("J'ai pu retrouver les initiales de la bonne ville dans un vieux parchemin décrivant la cérémonie funéraire : CI.");
-			builder.Prompts.text(session, "Pouvez-vous me donner le nom complet parmi ceux que vous avez déchiffré ?");
+			session.sendTyping();
+			setTimeout(function(){
+				session.send("Nous nous rapprochons du but, mais cela fait encore trop de villes où chercher.");
+				session.sendTyping();
+			}, 2800);
+			setTimeout(function(){
+				session.send("Afin de trouver le bon site archéologique, je vous propose de fouiller dans le jardin pour trouver un indice qui nous guidera vers le bon endroit.");
+				session.sendTyping();
+			}, 5500);
+			setTimeout(function(){
+				//session.send("J'ai pu retrouver les initiales de la bonne ville dans un vieux parchemin décrivant la cérémonie funéraire : CI.");
+				builder.Prompts.text(session, "Retrouvez-le et indiquez-moi le nom de la ville.");
+			}, 11000);
 		} 
 	},
     function (session, results) {
@@ -185,8 +243,11 @@ bot.dialog('/city', [
 		city = city.replace("é", "e").replace("á", "").toLowerCase();
 		if (city.indexOf("chichen itza") >= 0){
         	session.userData.city = "Chichén Itzá";
-			session.send("Oui (rock) ! " + session.userData.city + ", ça correspond à un des plus grands temples Mayas et à la région dans laquelle avait vécu Patte de Jaguar.")
-        	session.endDialog();
+			session.sendTyping();
+			setTimeout(function(){
+				session.send("Oui ! " + session.userData.city + ", ça correspond à un des plus grands temples Mayas et à la région dans laquelle avait vécu Patte de Jaguar.");
+	        	session.endDialog();
+			}, 1800);
 		}	
 		else{
 			session.userData.retryCity = true;
@@ -197,8 +258,25 @@ bot.dialog('/city', [
 
 bot.dialog('/decrypt', [
 	function (session) {
-		session.send("Nous avons pu effectuer des fouilles, et j'ai trouvé un texte nécessitant d'être traduit depuis les caractères Mayas. Je vous envoie ça.");		
-		builder.Prompts.text(session, "Faites moi signe quand vous aurez fini de le traduire."); 
+		session.sendTyping();
+		setTimeout(function(){
+			session.send("Nous ne sommes vraiment plus très loin ! Et ça tombe très bien, j'ai une de mes équipes déjà sur place qui travaille sur des retranscriptions des sculptures murales");
+			session.sendTyping();
+		}, 2000);
+		setTimeout(function(){
+			session.send("Je pense que nous devrions trouver une trappe ou un passage secret caché quelque part sur cette pyramide.");
+			session.sendTyping();
+		}, 9000);
+		setTimeout(function(){
+			session.send("Un vieux texte Maya parle de cela, je vous invite à le traduire et à essayer de comprendre ce qu'il veut dire. N'hésitez pas à vous aider de l'indice précédent.");
+			session.sendTyping();
+		}, 15000);
+		setTimeout(function(){
+			builder.Prompts.text(session, "Prévenez-moi quand vous aurez terminé la traduction, je vais en profiter pour contacter mes collègues.");
+		}, 23000);
+		//session.send("Le message ainsi obtenu devrait aider mes collègues archéologues dans leurs fouilles.");
+		//session.send("Nous avons pu effectuer des fouilles, et j'ai trouvé un texte nécessitant d'être traduit depuis les caractères Mayas. Je vous envoie ça.");		
+		//builder.Prompts.text(session, "Faites moi signe quand vous aurez fini de le traduire.");
 	},
     function (session, results) {
         session.userData.decrypt = results.response;
@@ -209,11 +287,22 @@ bot.dialog('/decrypt', [
 bot.dialog('/location', [
 	function (session) {
 		if (session.userData.retryLocation){
-			builder.Prompts.text(session, "Cela ne semble pas correspondre, notre sonar n'a rien détecté derrière cette marche, auriez-vous une autre proposition ?");
+			session.sendTyping();
+			setTimeout(function(){
+				builder.Prompts.text(session, "Mmmh, non, cela ne semble pas correspondre, notre sonar n'a rien détecté derrière cette marche, auriez-vous une autre proposition ?");
+			}, 2000);
 		}
 		else
 		{
-			session.send("Bon, avec les informations sur la Pyramide de Kukulcán trouvées sur Wikipedia, vous devriez pouvoir devenir l'emplacement exact de la cachette de la sépulture.");		
+			session.sendTyping();
+			setTimeout(function(){
+				session.send("Très bien. Mes collègues sur place me disent que cela doit se cacher derrière l'une des marches d'un des nombreux escaliers.");
+				session.sendTyping();
+			}, 2000);
+			setTimeout(function(){
+				builder.Prompts.text(session, "Avez-vous une idée du numéro de la marche et de l'orientation de l'escalier où fouiller ?");
+			}, 6000); 
+			/*session.send("Bon, avec les informations sur la Pyramide de Kukulcán trouvées sur Wikipedia, vous devriez pouvoir devenir l'emplacement exact de la cachette de la sépulture.");		
 			var msg = new builder.Message(session)
             .textFormat(builder.TextFormat.xml)
             .attachments([
@@ -228,6 +317,7 @@ bot.dialog('/location', [
             ]);
 			session.send(msg);
 			builder.Prompts.text(session, "Du coup, à votre avis quel est l'escalier et le numéro de la marche sur lesquels je dois me focaliser ?");
+			*/
 		} 
 	},
     function (session, results) {
@@ -245,9 +335,26 @@ bot.dialog('/location', [
 
 bot.dialog('/final', [
 	function (session) {
-		session.send("Oui :D  !!! J'ai trouvé le trésor, c'est magnifique !");
-		session.send("Je ne sais pas comment vous remercier...");
-		builder.Prompts.text(session, "J'espère que cette chasse au trésor vous aura plu autant qu'à moi !"); 
+		session.sendTyping();
+		setTimeout(function(){
+			session.send("YESSSSSSSS !!! On vient de m'informer qu'une des pierres a pivoté et laisse la place de se faufiler jusqu'à une petite pièce.");
+			session.sendTyping();
+		}, 3000);
+		setTimeout(function(){
+			session.send("Celle-ci contient le sarcophage de notre cher roi, et un trésor que nous avons pu ouvrir.");
+			session.sendTyping();
+		}, 7000);
+		setTimeout(function(){
+			session.send("Et ce trésor c'est... Du cacao ! Il est vrai que c'était une matière fort précieuse à leur époque, et souvent donnée en offrande aux dieux.")
+			session.sendTyping();
+		}, 10000);
+		setTimeout(function(){
+			session.send("Je ne sais pas comment vous remercier... Ou, plutôt, si ! Je vous envoie du chocolat pour fêter ça dignement, comme des rois et reines Mayas !");
+			session.sendTyping();
+		}, 16000);
+		setTimeout(function(){
+			builder.Prompts.text(session, "J'espère que cette chasse au trésor vous aura plu autant qu'à moi !"); 
+		}, 23000);
 	},
     function (session, results) {
 		session.userData.final = true;
